@@ -6,6 +6,7 @@ import './Products.css';
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [filters, setFilters] = useState({
     category: '',
     brand: '',
@@ -20,6 +21,7 @@ const Products = () => {
   const fetchProducts = async () => {
     try {
       setLoading(true);
+      setError(null);
       const params = new URLSearchParams();
       if (filters.category) params.append('category', filters.category);
       if (filters.brand) params.append('brand', filters.brand);
@@ -27,9 +29,17 @@ const Products = () => {
       if (filters.maxPrice) params.append('maxPrice', filters.maxPrice);
 
       const response = await axios.get(`http://localhost:5000/api/products?${params}`);
-      setProducts(response.data);
+      setProducts(response.data || []);
     } catch (error) {
       console.error('Error fetching products:', error);
+      if (error.code === 'ECONNREFUSED' || error.message.includes('Network Error')) {
+        setError('Cannot connect to server. Make sure the backend is running on port 5000.');
+      } else if (error.response) {
+        setError(`Error: ${error.response.data.error || error.response.statusText}`);
+      } else {
+        setError('Failed to fetch products. Please try again later.');
+      }
+      setProducts([]);
     } finally {
       setLoading(false);
     }
@@ -50,6 +60,23 @@ const Products = () => {
     <div className="products-page">
       <div className="container">
         <h1>Our Products</h1>
+
+        {error && (
+          <div className="error-message">
+            <p>{error}</p>
+            {error.includes('Cannot connect to server') && (
+              <div className="error-help">
+                <p><strong>To fix this:</strong></p>
+                <ol>
+                  <li>Make sure MongoDB is running</li>
+                  <li>Start the backend server: <code>cd backend && npm run dev</code></li>
+                  <li>Seed the database: <code>cd backend && npm run seed</code></li>
+                </ol>
+              </div>
+            )}
+            <button onClick={fetchProducts} className="retry-button">Retry</button>
+          </div>
+        )}
 
         <div className="filters">
           <select name="category" value={filters.category} onChange={handleFilterChange}>
@@ -88,8 +115,12 @@ const Products = () => {
         </div>
 
         <div className="products-grid">
-          {products.length === 0 ? (
-            <p>No products found.</p>
+          {!error && products.length === 0 ? (
+            <div className="no-products">
+              <p>No products found.</p>
+              <p className="help-text">If you just started the app, you may need to seed the database:</p>
+              <code>cd backend && npm run seed</code>
+            </div>
           ) : (
             products.map((product) => (
               <div key={product._id} className="product-card">
