@@ -5,7 +5,11 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "seed": "node seed.js",
+    "seed:20": "node seed.js 20",
+    "seed:50": "node seed.js 50",
+    "seed:100": "node seed.js 100"
   },
   "keywords": ["shoes", "ecommerce", "api"],
   "author": "",
