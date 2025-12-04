@@ -6,6 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
+    "setup": "node setup.js",
+    "setup:force": "node setup.js --force",
     "seed": "node seed.js",
     "seed:20": "node seed.js 20",
     "seed:50": "node seed.js 50",

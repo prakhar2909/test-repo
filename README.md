@@ -23,7 +23,32 @@ A full-stack e-commerce website for selling shoes built with MongoDB, Express, R
 - MongoDB (local or MongoDB Atlas)
 - npm or yarn
 
-## Installation
+## Quick Start
+
+1. **Install all dependencies:**
+```bash
+npm install
+```
+
+2. **Create a `.env` file in the backend directory** (optional, defaults provided):
+```
+PORT=5000
+MONGODB_URI=mongodb://localhost:27017/shoesdb
+```
+
+3. **Start everything (automatically seeds database if empty):**
+```bash
+npm run dev
+```
+
+This will:
+- ✅ Install all dependencies (backend + frontend)
+- ✅ Connect to MongoDB
+- ✅ Automatically seed database with 30 synthetic products if empty
+- ✅ Start backend server on `http://localhost:5000`
+- ✅ Start frontend server on `http://localhost:3000`
+
+## Manual Setup (Alternative)
 
 ### Backend Setup
 
@@ -48,7 +73,7 @@ MONGODB_URI=mongodb://localhost:27017/shoesdb
 npm run dev
 ```
 
-The backend will run on `http://localhost:5000`
+The backend will automatically seed the database if it's empty.
 
 ### Frontend Setup
 
@@ -67,15 +92,16 @@ npm install
 npm start
 ```
 
-The frontend will run on `http://localhost:3000`
+### Manual Database Seeding
 
-### Seed Database (Optional)
-
-To populate the database with sample products:
+To manually seed or reseed the database:
 
 ```bash
 cd backend
-node seed.js
+npm run seed          # Seed with 20 products (default)
+npm run seed:50       # Seed with 50 products
+npm run seed:100      # Seed with 100 products
+npm run setup:force   # Force reseed (clears existing data)
 ```
 
 ## API Endpoints
